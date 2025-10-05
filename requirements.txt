@@ -6,3 +6,4 @@ django-celery-results
 redis
 gunicorn
 psycopg2-binary
+channels>=4.0
