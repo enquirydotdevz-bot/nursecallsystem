@@ -39,14 +39,15 @@ ENV DJANGO_SETTINGS_MODULE=core.settings
 ENV PYTHONPATH=/app
 
 # -------------------------------
-# STEP 7: Run collectstatic
-# -------------------------------
-RUN python manage.py collectstatic --noinput
-
-# -------------------------------
-# STEP 8: Expose port and run
+# STEP 7: Expose port
 # -------------------------------
 EXPOSE 8000
 
-# Default command: Gunicorn for Django
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]
+# -------------------------------
+# STEP 8: Entrypoint: Migrate, collectstatic, start server
+# -------------------------------
+CMD bash -c "\
+    python manage.py migrate --noinput && \
+    python manage.py collectstatic --noinput && \
+    gunicorn core.wsgi:application --bind 0.0.0.0:8000 \
+"
