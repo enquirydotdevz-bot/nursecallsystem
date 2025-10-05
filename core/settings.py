@@ -79,6 +79,11 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD', 'password'),
     }
 }
+ALLOWED_HOSTS = [
+    "nursecallsystem.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 LANGUAGE_CODE = 'en-us'
