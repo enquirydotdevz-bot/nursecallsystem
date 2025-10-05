@@ -1,7 +1,8 @@
-Django>=4.2
+Django>=5.0
 djangorestframework
+celery
+django-celery-beat
+django-celery-results
+redis
 gunicorn
 psycopg2-binary
-celery
-redis
-django-cors-headers
