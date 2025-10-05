@@ -44,10 +44,17 @@ ENV PYTHONPATH=/app
 EXPOSE 8000
 
 # -------------------------------
-# STEP 8: Entrypoint: Migrate, collectstatic, start server
 # -------------------------------
+# STEP 8: Entrypoint: Migrate, collectstatic, create superuser, start server
+# -------------------------------
+ENV DJANGO_SUPERUSER_USERNAME=mudit1
+ENV DJANGO_SUPERUSER_EMAIL=bhojakmudit26@gmail.com
+ENV DJANGO_SUPERUSER_PASSWORD=9314110690
+
 CMD bash -c "\
     python manage.py migrate --noinput && \
     python manage.py collectstatic --noinput && \
+    python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL && \
     gunicorn core.wsgi:application --bind 0.0.0.0:8000 \
 "
+
