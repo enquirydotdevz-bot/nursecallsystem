@@ -1,0 +1,61 @@
+services:
+  - type: web
+    name: nurse-call-api
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn core.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: core.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: redis
+          property: connectionString
+      - key: DB_HOST
+        fromDatabase:
+          name: nurse-call-db
+          property: host
+      - key: DB_NAME
+        fromDatabase:
+          name: nurse-call-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: nurse-call-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: nurse-call-db
+          property: password
+
+  - type: worker
+    name: celery-worker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A core worker --loglevel=info
+    envVars:
+      - fromGroup: nurse-call-api
+
+  - type: worker
+    name: celery-beat
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A core beat --loglevel=info
+    envVars:
+      - fromGroup: nurse-call-api
+
+databases:
+  - name: nurse-call-db
+
+redis:
+  - name: redis
