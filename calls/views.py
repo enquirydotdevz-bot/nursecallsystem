@@ -9,6 +9,27 @@ from channels.layers import get_channel_layer
 from .models import Call
 from .serializers import CallSerializer
 
+from .webhooks import send_webhook
+
+class CallViewSet(APIView):
+    def post(self, request):
+        serializer = CallSerializer(data=request.data)
+        if serializer.is_valid():
+            call = serializer.save()
+
+            payload = {
+                "id": call.id,
+                "room_no": call.room.room_no if call.room else None,
+                "call_from": call.call_from,
+                "created_at": str(call.created_at),
+                "status": "New call received"
+            }
+
+            # Log and send webhook
+            send_webhook(payload)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def send_ws_notification(event_type, call):
     """Helper: push real-time WebSocket notifications"""
