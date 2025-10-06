@@ -12,7 +12,7 @@ def send_webhook_notification(call):
     }
 
     # Use your same backend’s public URL (Render URL)
-    webhook_url = "https://your-render-service-name.onrender.com/api/webhook/"
+    webhook_url = "https://nursecallsystem.onrender.com/api/webhook/"
 
     try:
         response = requests.post(
