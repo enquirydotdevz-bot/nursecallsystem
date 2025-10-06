@@ -11,4 +11,6 @@ urlpatterns = [
     path("calls/unacknowledged/", views.unacknowledged_calls, name="unack_calls"),
     path("rooms/create-random/", views.create_random_rooms, name="create_random_rooms"),
     path("rooms/", views.list_rooms, name="list_rooms"),
+    path("webhook/", views.webhook_receiver, name="webhook_receiver"),
+
 ]
