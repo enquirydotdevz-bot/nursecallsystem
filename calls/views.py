@@ -90,3 +90,19 @@ def list_rooms(request):
     """List all rooms with their current state."""
     rooms = Room.objects.all().order_by("room_no")
     return Response(RoomSerializer(rooms, many=True).data)
+
+# calls/views.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+@api_view(["POST"])
+def webhook_receiver(request):
+    """
+    Receives webhook notifications from this or other services
+    """
+    data = request.data
+    print("Webhook received:", data)  # for debugging
+    # You can add logic here (store in DB, trigger socket, etc.)
+    return Response({"status": "received"}, status=status.HTTP_200_OK)
+
